@@ -22,7 +22,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.Bigquery.Datasets;
 import com.google.api.services.bigquery.Bigquery.Jobs.Insert;
@@ -57,7 +57,7 @@ public class BigQueryJavaGettingStarted {
   // with your client_id and client_secret
   //
   /////////////////////////
-  private static final String PROJECT_ID = "XXXXXXXXX";
+  private static final String PROJECT_ID = "XXXXXXXXXXXXXXX";
   private static final String CLIENTSECRETS_LOCATION = "client_secrets.json";
 
   static GoogleClientSecrets clientSecrets = loadClientSecrets(CLIENTSECRETS_LOCATION);
@@ -65,6 +65,8 @@ public class BigQueryJavaGettingStarted {
   // Static variables for API scope, callback URI, and HTTP/JSON functions
   private static final List<String> SCOPES = Arrays.asList(BigqueryScopes.BIGQUERY);
   private static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
+
+  /** Global instances of HTTP transport and JSON factory objects. */
   private static final HttpTransport TRANSPORT = new NetHttpTransport();
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
