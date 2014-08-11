@@ -39,12 +39,14 @@ import com.google.api.services.bigquery.model.TableRow;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
- * @author Michael Manoochehri
+ * Example of authorizing with BigQuery and reading from a public dataset.
  */
 public class BigQueryJavaGettingStarted {
 
@@ -53,16 +55,17 @@ public class BigQueryJavaGettingStarted {
   //
   // Visit the Google API Console to create a Project and generate an
   // OAuth 2.0 Client ID and Secret (http://code.google.com/apis/console).
-  // Then, add the Project ID below, and update the clientsecrets.json file
-  // with your client_id and client_secret
+  // Then, add the Project ID below, and point the CLIENTSECRETS_LOCATION file
+  // to the file you downloaded-- as described in the articles in the README--
+  // with your client_id and client_secret.
   //
   /////////////////////////
-  private static final String PROJECT_ID = "XXXXXXXXXXXXXXX";
-  private static final String CLIENTSECRETS_LOCATION = "client_secrets.json";
+  private static final String PROJECT_ID = "xxxxxxxxxxxx";
+  private static final String CLIENTSECRETS_LOCATION = "/path/to/your/client_secret.json";
 
-  static GoogleClientSecrets clientSecrets = loadClientSecrets(CLIENTSECRETS_LOCATION);
+  static GoogleClientSecrets clientSecrets = loadClientSecrets();
 
-  // Static variables for API scope, callback URI, and HTTP/JSON functions
+    // Static variables for API scope, callback URI, and HTTP/JSON functions
   private static final List<String> SCOPES = Arrays.asList(BigqueryScopes.BIGQUERY);
   private static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
 
@@ -234,23 +237,26 @@ public class BigQueryJavaGettingStarted {
     }
   }
 
-
   /**
-   *  Helper to load client ID/Secret from file.
+   * Helper to load client ID/Secret from file.
    *
-   * @param clientSecretsLocation a path to a client_secrets.json file
-   * @return a ClientSecrets object created from a client_secrets.json file
+   * @return a GoogleClientSecrets object based on a clientsecrets.json
    */
-  private static GoogleClientSecrets loadClientSecrets(String clientSecretsLocation) {
+  private static GoogleClientSecrets loadClientSecrets() {
     try {
-      clientSecrets = GoogleClientSecrets.load(new JacksonFactory(),
-          BigQueryJavaGettingStarted.class.getResourceAsStream(clientSecretsLocation));
+      InputStream inputStream = new FileInputStream(CLIENTSECRETS_LOCATION);
+        Reader reader =
+          new InputStreamReader(inputStream);
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(new JacksonFactory(),
+                reader);
+        return clientSecrets;
     } catch (Exception e) {
       System.out.println("Could not load client_secrets.json");
       e.printStackTrace();
     }
-    return clientSecrets;
+    return null;
   }
+
 
 
   /**
