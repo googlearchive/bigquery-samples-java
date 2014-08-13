@@ -15,10 +15,14 @@
 package com.google.cloud.bigquery.samples;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.util.store.DataStoreFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -45,23 +49,26 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * Example of authorizing with BigQuery and reading from a public dataset.
  */
 public class BigQueryJavaGettingStarted {
 
   /////////////////////////
+  // CHANGE ME!
   // USER GENERATED VALUES: you must fill in values specific to your application.
   //
   // Visit the Google API Console to create a Project and generate an
-  // OAuth 2.0 Client ID and Secret (http://code.google.com/apis/console).
+  // OAuth 2.0 Client ID and Secret (https://console.developers.google.com/).
+  // See the README for more info.
   // Then, add the Project ID below, and point the CLIENTSECRETS_LOCATION file
-  // to the file you downloaded-- as described in the articles in the README--
-  // with your client_id and client_secret.
-  //
+  // to the file you downloaded.
   /////////////////////////
   private static final String PROJECT_ID = "xxxxxxxxxxxx";
   private static final String CLIENTSECRETS_LOCATION = "/path/to/your/client_secret.json";
+
+
 
   static GoogleClientSecrets clientSecrets = loadClientSecrets();
 
@@ -75,6 +82,16 @@ public class BigQueryJavaGettingStarted {
 
   private static GoogleAuthorizationCodeFlow flow = null;
 
+    /** Directory to store user credentials. */
+  private static final java.io.File DATA_STORE_DIR =
+      new java.io.File(System.getProperty("user.home"), ".store/bq_sample");
+
+  /**
+   * Global instance of the {@link DataStoreFactory}. The best practice is to make it a single
+   * globally shared instance across your application.
+   */
+  private static FileDataStoreFactory dataStoreFactory;
+
   /**
    * @param args
    * @throws IOException
@@ -82,6 +99,7 @@ public class BigQueryJavaGettingStarted {
    */
   public static void main(String[] args) throws IOException, InterruptedException {
     // Create a new BigQuery client authorized via OAuth 2.0 protocol
+    // dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
     Bigquery bigquery = createAuthorizedClient();
 
     // Print out available datasets in the "publicdata" project to the console
@@ -99,6 +117,17 @@ public class BigQueryJavaGettingStarted {
 
   }
 
+  /** Authorizes the installed application to access user's protected data. */
+  private static Credential authorize() throws IOException {
+    dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
+    // set up authorization code flow
+    GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+        TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES).setDataStoreFactory(
+        dataStoreFactory).build();
+    // authorize
+    return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+  }
+
   /**
    * Creates an authorized BigQuery client service using the OAuth 2.0 protocol
    *
@@ -112,20 +141,7 @@ public class BigQueryJavaGettingStarted {
    */
   public static Bigquery createAuthorizedClient() throws IOException {
 
-    String authorizeUrl = new GoogleAuthorizationCodeRequestUrl(
-        clientSecrets,
-        REDIRECT_URI,
-        SCOPES).setState("").build();
-
-    System.out.println("Paste this URL into a web browser to authorize BigQuery Access:\n" + authorizeUrl);
-
-    System.out.println("... and type the code you received here: ");
-    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    String authorizationCode = in.readLine();
-
-    // Exchange the auth code for an access token and refresh token
-    Credential credential = exchangeCode(authorizationCode);
-
+    Credential credential = authorize();
     return new Bigquery(TRANSPORT, JSON_FACTORY, credential);
   }
 
@@ -251,44 +267,10 @@ public class BigQueryJavaGettingStarted {
                 reader);
         return clientSecrets;
     } catch (Exception e) {
-      System.out.println("Could not load client_secrets.json");
+      System.out.println("Could not load client secrets file " + CLIENTSECRETS_LOCATION);
       e.printStackTrace();
     }
     return null;
-  }
-
-
-
-  /**
-   * Exchange the authorization code for OAuth 2.0 credentials.
-   *
-   * @return an authorized Google Auth flow
-   */
-  static Credential exchangeCode(String authorizationCode) throws IOException {
-    GoogleAuthorizationCodeFlow flow = getFlow();
-    GoogleTokenResponse response =
-        flow.newTokenRequest(authorizationCode).setRedirectUri(REDIRECT_URI).execute();
-    return flow.createAndStoreCredential(response, null);
-  }
-
-
-  /**
-   * Build an authorization flow and store it as a static class attribute.
-   *
-   * @return a Google Auth flow object
-   */
-  static GoogleAuthorizationCodeFlow getFlow() {
-    if (flow == null) {
-      HttpTransport httpTransport = new NetHttpTransport();
-      JacksonFactory jsonFactory = new JacksonFactory();
-
-      flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport,
-          jsonFactory,
-          clientSecrets,
-          SCOPES)
-          .setAccessType("offline").setApprovalPrompt("force").build();
-    }
-    return flow;
   }
 
 
