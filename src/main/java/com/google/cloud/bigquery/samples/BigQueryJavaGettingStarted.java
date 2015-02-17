@@ -55,6 +55,7 @@ import java.util.List;
  */
 public class BigQueryJavaGettingStarted {
 
+  // [START credentials]
   /////////////////////////
   // CHANGE ME!
   // USER GENERATED VALUES: you must fill in values specific to your application.
@@ -67,8 +68,6 @@ public class BigQueryJavaGettingStarted {
   /////////////////////////
   private static final String PROJECT_ID = "xxxxxxxxxxxx";
   private static final String CLIENTSECRETS_LOCATION = "/path/to/your/client_secret.json";
-
-
 
   static GoogleClientSecrets clientSecrets = loadClientSecrets();
 
@@ -127,6 +126,7 @@ public class BigQueryJavaGettingStarted {
     // authorize
     return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
   }
+  // [END credentials]
 
   /**
    * Creates an authorized BigQuery client service using the OAuth 2.0 protocol
@@ -166,6 +166,7 @@ public class BigQueryJavaGettingStarted {
     }
   }
 
+  // [START start_query]
   /**
    * Creates a Query Job for a particular query on a dataset
    *
@@ -226,7 +227,9 @@ public class BigQueryJavaGettingStarted {
       Thread.sleep(1000);
     }
   }
+  // [END start_query]
 
+  // [START display_result]
   /**
    * Makes an API call to the BigQuery API
    *
@@ -252,6 +255,7 @@ public class BigQueryJavaGettingStarted {
       System.out.println();
     }
   }
+  // [END display_result]
 
   /**
    * Helper to load client ID/Secret from file.
