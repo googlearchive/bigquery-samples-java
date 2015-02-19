@@ -60,7 +60,7 @@ public class BigQueryJavaGettingStarted {
   // CHANGE ME!
   // USER GENERATED VALUES: you must fill in values specific to your application.
   //
-  // Visit the Google API Console to create a Project and generate an
+  // Visit the cloud.google.com/console to create a Project and generate an
   // OAuth 2.0 Client ID and Secret (https://console.developers.google.com/).
   // See the README for more info.
   // Then, add the Project ID below, and point the CLIENTSECRETS_LOCATION file
