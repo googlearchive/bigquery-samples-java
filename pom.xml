@@ -8,13 +8,6 @@
   <name>bq-gettingstarted</name>
   <url>http://maven.apache.org</url>
 
-  <repositories>
-      <repository>
-          <id>googleapis</id>
-          <url>https://google-api-client-libraries.appspot.com/mavenrepo</url>
-      </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
         <groupId>com.google.apis</groupId>
