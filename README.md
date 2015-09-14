@@ -1,3 +1,9 @@
+![status: inactive](https://img.shields.io/badge/status-inactive-red.svg)
+
+This project is no longer actively developed or maintained.  
+
+For new work on this check out [java-docs-samples/bigquery](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/bigquery)
+
 # Getting Started with BigQuery and the Google Java API Client library
 
 Google's BigQuery Service features a REST-based API that allows developers to create applications to run ad-hoc queries on massive datasets. This sample Java command-line application demonstrates how to access the BigQuery API using the Google Java API Client Libraries. For more information, read the [Getting Started with BigQuery and the Google Java API Client library][1] codelab.
