@@ -1,8 +1,10 @@
 ![status: inactive](https://img.shields.io/badge/status-inactive-red.svg)
 
+# DEPRICATED
+
 This project is no longer actively developed or maintained.  
 
-For new work on this check out [java-docs-samples/bigquery](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/bigquery)
+**For new work on this check out [java-docs-samples/bigquery](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/bigquery)**
 
 # Getting Started with BigQuery and the Google Java API Client library
 
